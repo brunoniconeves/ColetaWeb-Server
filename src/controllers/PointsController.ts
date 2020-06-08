@@ -15,9 +15,9 @@ class PointsController {
       }
 
       const items = await knex('items')
-        .join('point_items', 'items.id', '=', 'point_items.id')
+        .join('point_items', 'items.id', '=', 'point_items.item_id')
         .where('point_items.point_id', id)
-        .select('items.title');
+        .select('items.id', 'items.title', 'items.image');
 
       return response.json({point, items});
     }
@@ -33,9 +33,9 @@ class PointsController {
 
       const points = await knex('points')
         .join('point_items', 'points.id', 'point_items.point_id')
-        .orWhereIn('point_items.item_id', parsedItems)
-        .orWhere('city', String(city))
-        .orWhere('uf', String(uf))
+        .whereIn('point_items.item_id', parsedItems)
+        .where('city', String(city))
+        .where('uf', String(uf))
         .distinct()
         .select('points.*');
 
